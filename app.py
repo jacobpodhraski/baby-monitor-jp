@@ -4,13 +4,18 @@ import cv2
 from typing import Generator
 import os
 
-os.environ["DISPLAY"] = ":0"
-os.environ["NV_TEGRA_CAMERA_PROTOCOL"] = "0"
-
 app = FastAPI()
 
-# GStreamer pipeline string for camera capture
-pipeline = "nvarguscamerasrc ! video/x-raw(memory:NVMM), width=(int)1920, height=(int)1080, format=(string)NV12, framerate=(fraction)30/1 ! nvvidconv flip-method=0 ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR ! appsink"
+pipeline = (
+    "nvarguscamerasrc ! "
+    "video/x-raw(memory:NVMM), width=768, height=432, format=NV12 ! "
+    "nvvidconv ! "
+    "video/x-raw, format=BGRx ! "
+    "videoconvert ! "
+    "video/x-raw, format=BGR ! "
+    "appsink"
+)
+
 print("GStreamer Pipeline:", pipeline)
 
 # Create GStreamer pipeline
@@ -31,11 +36,6 @@ def generate_frames() -> Generator[bytes, None, None]:
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-@app.get("/")
+@app.get("/live_stream")
 async def video_feed():
     return StreamingResponse(generate_frames(), media_type="multipart/x-mixed-replace; boundary=frame")
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-
