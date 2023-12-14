@@ -1,40 +1,45 @@
 FROM nvcr.io/nvidia/l4t-base:r32.5.0
 
-RUN apt-get update -y && apt-get install -y \
-            libgstreamer1.0-0 \
-            gstreamer1.0-plugins-base \
-            gstreamer1.0-plugins-good \
-            gstreamer1.0-plugins-bad \
-            gstreamer1.0-plugins-ugly \
-            gstreamer1.0-libav \
-            gstreamer1.0-doc \
-            gstreamer1.0-tools \
-            libgstreamer1.0-dev \
-            libgstreamer-plugins-base1.0-dev
-RUN apt-get update -y && apt-get install -y  pkg-config \
- zlib1g-dev  libwebp-dev \
- libtbb2 libtbb-dev  \
- libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
- cmake
+RUN apt-get update -y && \
+    apt-get install -y \
+        libgstreamer1.0-0 \
+        gstreamer1.0-plugins-base \
+        gstreamer1.0-plugins-good \
+        gstreamer1.0-plugins-bad \
+        gstreamer1.0-plugins-ugly \
+        gstreamer1.0-libav \
+        gstreamer1.0-doc \
+        gstreamer1.0-tools \
+        libgstreamer1.0-dev \
+        libgstreamer-plugins-base1.0-dev \
+        pkg-config \
+        zlib1g-dev \
+        libwebp-dev \
+        libtbb2 \
+        libtbb-dev \
+        libgtk2.0-dev \
+        pkg-config \
+        libavcodec-dev \
+        libavformat-dev \
+        libswscale-dev \
+        libv4l-dev \
+        cmake \
+        autoconf \
+        autotools-dev \
+        build-essential \
+        gcc \
+        git \
+        python3 \
+        python3-pip \
+        python3-dev \
+        python3-gi \
+        python3-gst-1.0 \
+        python3-numpy \
+        ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get install -y \
-  autoconf \
-  autotools-dev \
-  build-essential \
-  gcc \
-  git
-
-RUN apt-get update -y \
-     && apt-get install -y --no-install-recommends \
-         python3 \
-         python3-pip \
-         python3-dev \
-         python3-gi \
-         python3-gst-1.0 \
-         python3-numpy
-
-RUN apt-get update -y && apt-get install -y ffmpeg
 ENV OPENCV_RELEASE_TAG 4.1.1
+
 RUN git clone --depth 1 -b ${OPENCV_RELEASE_TAG}  https://github.com/opencv/opencv.git /var/local/git/opencv
 
 RUN mkdir -p /var/local/git/opencv/build && \
@@ -50,8 +55,7 @@ RUN mkdir -p /var/local/git/opencv/build && \
           -D OPENCV_GENERATE_PKGCONFIG=ON \
           -D PYTHON3_PACKAGES_PATH=/usr/lib/python3/dist-packages ..
 
-RUN  cd /var/local/git/opencv/build && \
-      make install
+RUN  cd /var/local/git/opencv/build && make install
 
 ADD requirements.txt requirements.txt
 

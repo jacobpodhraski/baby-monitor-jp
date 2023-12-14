@@ -2,8 +2,7 @@ version: '3'
 
 services:
   fastapi-app:
-    build:
-      context: .
+    image: video-stream-api:latest
     cap_add:
       - SYS_PTRACE
     environment:
