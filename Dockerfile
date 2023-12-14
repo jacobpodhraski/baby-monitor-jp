@@ -1,4 +1,5 @@
-FROM nvcr.io/nvidia/l4t-base:r32.5.0
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 RUN apt-get update -y && \
     apt-get install -y \
