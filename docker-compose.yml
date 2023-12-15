@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  fastapi-app:
+    image: video-stream-api:latest
+    cap_add:
+      - SYS_PTRACE
+    environment:
+      - LC_ALL=C.UTF-8
+      - LANG=C.UTF-8
+      - DISPLAY=:0
+    privileged: True
+    ports:
+      - "8000:8000"
+    volumes:
+      - /tmp/.X11-unix/:/tmp/.X11-unix/
+      - /tmp/argus_socket:/tmp/argus_socket
+      - /dev:/dev
+      - ./app/app.py:/app/app.py
+    privileged: True
